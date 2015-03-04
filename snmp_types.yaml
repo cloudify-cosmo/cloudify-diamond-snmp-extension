@@ -1,0 +1,81 @@
+tosca_definitions_version: cloudify_dsl_1_0
+
+imports:
+  - http://www.getcloudify.org/spec/cloudify/3.2m4/types.yaml
+  - http://www.getcloudify.org/spec/diamond-plugin/1.2m4/plugin.yaml
+  - http://www.getcloudify.org/spec/openstack-plugin/1.2m4/plugin.yaml
+
+
+node_types:
+  SNMPSecurityGroup:
+    derived_from: cloudify.openstack.nodes.SecurityGroup
+    properties:
+      security_group:
+        default:
+          name: snmp_security_group
+          description: Allows UDP communication for SNMP
+      rules:
+        default:
+          - remote_ip_prefix: 0.0.0.0/0
+            port: 161
+            protocol: udp
+
+  SNMPProxy:
+    derived_from: cloudify.nodes.Root
+    interfaces:
+      cloudify.interfaces.lifecycle:
+        create:
+          implementation: scripts/install_requirements.sh
+      cloudify.interfaces.monitoring:
+        start:
+          implementation: diamond.diamond_agent.tasks.add_collectors
+          inputs:
+            collectors_config:
+              default:
+                SNMPProxyCollector:
+                  path: collectors/snmpproxy.py
+                  config: { get_attribute: [SELF, snmp_collector_config] }
+
+  SNMPManagerProxy:
+    derived_from: cloudify.nodes.Compute # "fake compute"
+    properties:
+      install_agent:
+        default: false
+      diamond_config:
+        default:
+          interval: 1
+    interfaces:
+      cloudify.interfaces.lifecycle:
+        create:
+          executor: central_deployment_agent
+          implementation: diamond.diamond_agent.tasks.install
+          inputs:
+            diamond_config:
+              default: { get_property: [SELF, diamond_config] }
+        configure:
+          executor: central_deployment_agent
+          implementation: scripts/install_requirements.sh
+        start:
+          executor: central_deployment_agent
+          implementation: diamond.diamond_agent.tasks.start
+        stop:
+          executor: central_deployment_agent
+          implementation: diamond.diamond_agent.tasks.stop
+        delete:
+          executor: central_deployment_agent
+          implementation: diamond.diamond_agent.tasks.uninstall
+      cloudify.interfaces.monitoring:
+        start:
+          implementation: diamond.diamond_agent.tasks.add_collectors
+          executor: central_deployment_agent
+          inputs:
+            collectors_config:
+              default:
+                SNMPProxyCollector:
+                  path: collectors/snmpproxy.py
+                  config: { get_attribute: [SELF, snmp_collector_config ] }
+
+relationships:
+  cloudify.relationships.monitors:
+    derived_from: cloudify.relationships.depends_on
+

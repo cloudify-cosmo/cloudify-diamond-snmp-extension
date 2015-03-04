@@ -1,0 +1,40 @@
+tosca_definitions_version: cloudify_dsl_1_0
+
+imports:
+  - snmp_types.yaml
+
+node_templates:
+
+  SNMPSecurityGroup:
+    type: SNMPSecurityGroup
+
+  SNMPMonitoredHost:
+    type: cloudify.openstack.nodes.Server
+    properties:
+      cloudify_agent:
+       user: ubuntu
+      server:
+        image: 8c01b30c-85fb-4cee-80d7-18fb44086c84
+        flavor: 101
+    relationships:
+     - type: cloudify.openstack.server_connected_to_security_group
+       target: SNMPSecurityGroup
+
+  SNMPProxyNode:
+    type: SNMPManagerProxy
+    relationships:
+     - type: cloudify.relationships.monitors
+       target: SNMPMonitoredHost
+       source_interfaces:
+         cloudify.interfaces.relationship_lifecycle:
+           preconfigure:
+             implementation: scripts/append_diamond_conf.py
+             executor: central_deployment_agent
+             inputs:
+               port: 161
+               community: public
+               path_suffix: cpu
+               oids:
+                 1.3.6.1.4.1.2021.10.1.3.1: total.system
+                 1.3.6.1.4.1.2021.10.1.3.2: total.user
+
