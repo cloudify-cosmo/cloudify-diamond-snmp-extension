@@ -36,6 +36,12 @@ node_types:
                   path: collectors/snmpproxy.py
                   config: { get_attribute: [SELF, snmp_collector_config] }
 
+  SnmpdConfiguringNode:
+    derived_from: cloudify.nodes.Root
+    interfaces:
+      cloudify.interfaces.lifecycle:
+        configure: scripts/setup_snmpd.sh
+
   SNMPManagerProxy:
     derived_from: cloudify.nodes.Compute # "fake compute"
     properties:
