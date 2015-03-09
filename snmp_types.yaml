@@ -80,6 +80,9 @@ node_types:
                 SNMPProxyCollector:
                   path: collectors/snmpproxy.py
                   config: { get_attribute: [SELF, snmp_collector_config ] }
+        stop:
+          implementation: scripts/diamond_clean_up.py
+          executor: central_deployment_agent
 
 relationships:
   cloudify.relationships.monitors:
