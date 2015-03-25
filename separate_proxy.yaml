@@ -54,6 +54,8 @@ node_templates:
     relationships:
       - type: cloudify.relationships.contained_in
         target: proxy_server
+      - type: cloudify.relationships.depends_on
+        target: snmpd_configuring_node # Assure that Diamond starts after snmpd is configured
       - type: cloudify.relationships.monitors
         target: snmp_monitored_host
         source_interfaces:
