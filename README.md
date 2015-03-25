@@ -3,7 +3,7 @@ An extension to the diamond plugin that adds support for monitoring SNMP metrics
 
 SNMP types
 ----------
-All node types you will need are defined in [snmp_types.yaml](snmp_types.yaml). SNMP proxy is a node responsible for gathering the requested metrics from SNMP devices and sending them to RabbitMQ on behalf of those devices as if they were reporting those metrics by themselves (the proxy should be transparent).
+All node types you will need are defined in [snmp-types.yaml](snmp-types.yaml). SNMP proxy is a node responsible for gathering the requested metrics from SNMP devices and sending them to RabbitMQ on behalf of those devices as if they were reporting those metrics by themselves (the proxy should be transparent).
 
 ### SNMPMonitoredHost
 SNMPMonitoredHost exists in the blueprints only as a simulation of a monitored device. We assume that SNMP works on the device and that the SNMP proxy can access it. In our example the SNMPMonitoredHost is a virtual machine with Ubuntu. The SnmpdConfiguringNode installs SNMP daemon and changes its configuration so it can be polled from anywhere.
