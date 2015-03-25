@@ -10,8 +10,7 @@ node_types:
     derived_from: cloudify.nodes.Root
     interfaces:
       cloudify.interfaces.lifecycle:
-        create:
-          implementation: scripts/install_requirements.sh
+        create: scripts/install_requirements.sh
       cloudify.interfaces.monitoring:
         start:
           implementation: diamond.diamond_agent.tasks.add_collectors

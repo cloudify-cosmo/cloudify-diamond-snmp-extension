@@ -9,10 +9,10 @@ imports:
 
 node_templates:
 
-  SNMPSecurityGroup:
+  snmp_security_group:
     type: SNMPSecurityGroup
 
-  SNMPMonitoredHost:
+  snmp_monitored_host:
     type: cloudify.openstack.nodes.Server
     properties:
       cloudify_agent:
@@ -22,15 +22,15 @@ node_templates:
         flavor: 101
     relationships:
      - type: cloudify.openstack.server_connected_to_security_group
-       target: SNMPSecurityGroup
+       target: snmp_security_group
 
-  SnmpdConfiguringNode:
+  snmpd_configuring_node:
     type: SnmpdConfiguringNode
     relationships:
       - type: cloudify.relationships.contained_in
-        target: SNMPMonitoredHost
+        target: snmp_monitored_host
 
-  ProxyServer:
+  proxy_server:
     type: cloudify.openstack.nodes.Server
     properties:
       cloudify_agent:
@@ -49,13 +49,13 @@ node_templates:
         stop: diamond.diamond_agent.tasks.stop
         uninstall: diamond.diamond_agent.tasks.uninstall
 
-  ProxyNode:
+  proxy_node:
     type: SNMPProxy
     relationships:
       - type: cloudify.relationships.contained_in
-        target: ProxyServer
+        target: proxy_server
       - type: cloudify.relationships.monitors
-        target: SNMPMonitoredHost
+        target: snmp_monitored_host
         source_interfaces:
           cloudify.interfaces.relationship_lifecycle:
             preconfigure:
