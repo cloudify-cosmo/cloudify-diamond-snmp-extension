@@ -59,12 +59,7 @@ node_templates:
         source_interfaces:
           cloudify.interfaces.relationship_lifecycle:
             preconfigure:
-              implementation: scripts/append_diamond_conf.py
-              executor: central_deployment_agent
               inputs:
-                port: 161
-                community: public
-                path_suffix: cpu
                 oids:
                   1.3.6.1.4.1.2021.10.1.3.1: total.system
                   1.3.6.1.4.1.2021.10.1.3.2: total.user

@@ -69,4 +69,21 @@ node_types:
 relationships:
   cloudify.relationships.monitors:
     derived_from: cloudify.relationships.depends_on
+    source_interfaces:
+      cloudify.interfaces.relationship_lifecycle:
+        preconfigure:
+          implementation: scripts/append_diamond_conf.py
+          executor: central_deployment_agent
+          inputs:
+            port:
+              default: 161
+              description: snmp port
+            community:
+              default: public
+              description: the community
+            path_suffix:
+              default: cpu
+              description: temporary hack for charts
+            oids:
+              description: the oids to poll
 
