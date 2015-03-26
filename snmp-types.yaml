@@ -36,25 +36,28 @@ node_types:
         default:
           interval: 1
     interfaces:
-      cloudify.interfaces.lifecycle:
-        create:
+      cloudify.interfaces.monitoring_agent:
+        install:
           executor: central_deployment_agent
           implementation: diamond.diamond_agent.tasks.install
           inputs:
             diamond_config:
               default: { get_property: [SELF, diamond_config] }
-        configure:
-          executor: central_deployment_agent
-          implementation: scripts/install_requirements.sh
         start:
           executor: central_deployment_agent
           implementation: diamond.diamond_agent.tasks.start
         stop:
           executor: central_deployment_agent
           implementation: diamond.diamond_agent.tasks.stop
-        delete:
+        uninstall:
           executor: central_deployment_agent
           implementation: scripts/diamond_clean_up.py
+
+      cloudify.interfaces.lifecycle:
+        configure:
+          executor: central_deployment_agent
+          implementation: scripts/install_requirements.sh
+
       cloudify.interfaces.monitoring:
         start:
           implementation: diamond.diamond_agent.tasks.add_collectors
