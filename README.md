@@ -3,18 +3,18 @@ An extension to the diamond plugin that adds support for monitoring SNMP metrics
 
 SNMP types
 ----------
-All node types you will need are defined in [snmp-types.yaml](snmp-types.yaml). SNMP proxy is a node responsible for gathering the requested metrics from SNMP devices and sending them to RabbitMQ on behalf of those devices as if they were reporting those metrics by themselves (the proxy should be transparent).
+All node types you will need are defined in [snmp-types.yaml](snmp-types.yaml). The security group necessary for OpenStack is defined in [openstack-snmp-types.yaml](openstack-snmp-types.yaml). SNMP proxy is a node responsible for gathering the requested metrics from SNMP devices and sending them to RabbitMQ on behalf of those devices as if they were reporting those metrics by themselves (the proxy should be transparent).
 
-### SNMPMonitoredHost
-SNMPMonitoredHost exists in the blueprints only as a simulation of a monitored device. We assume that SNMP works on the device and that the SNMP proxy can access it. In our example the SNMPMonitoredHost is a virtual machine with Ubuntu. The SnmpdConfiguringNode installs SNMP daemon and changes its configuration so it can be polled from anywhere.
+### snmp_monitored_host
+snmp_monitored_host exists in the blueprints only as a simulation of a monitored device. We assume that SNMP works on the device and that the SNMP proxy can access it. In our example the snmp_monitored_host is a virtual machine with Ubuntu. The snmpd_configuring_node installs SNMP daemon and changes its configuration so it can be polled from anywhere.
 
-### SNMPProxy and SNMPManagerProxy
+### snmp_proxy and snmp_manager_proxy
 The nodes that poll the SNMP devices.
-SNMPProxy is located  on a separate compute node and SNMPManagerProxy on the Manager.
+snmp_proxy is located  on a separate compute node and snmp_manager_proxy on the Manager.
 
-To define the SNMP polling create a relationship for each device you want to poll. You need to add a preconfigure operation that will change the SNMPProxyCollector's configuration. As its implementation, use [append_diamond_conf.py](scripts/append_diamond_conf.py). In the inputs you need to specify the port, community name and OIDs that you wish to poll.
+To define the SNMP polling create a relationship for each device you want to poll. You need to add a preconfigure operation that will change the SNMPProxyCollector's configuration. In the inputs you need to specify the port (default: 161), community name (default: public) and OIDs that you wish to poll.
 
-### SNMPSecurityGroup
+### snmp_security_group
  Security group that contains OpenStack rules allowing SNMP proxy to access SNMP devices.
 
 SNMP Proxy on Manager
@@ -22,7 +22,7 @@ SNMP Proxy on Manager
 [An example blueprint](proxy_on_manager.yaml)
 
 
-Create a node of SNMPManagerProxy type. Next add relationships as described in SNMPProxy and SNMPManagerProxy paragraphs.
+Create a node of snmp_manager_proxy type. Next add relationships as described in snmp_proxy and snmp_manager_proxy paragraphs.
 
 SNMP Proxy on separate VMs
 --------------------------
@@ -30,7 +30,7 @@ SNMP Proxy on separate VMs
 
 
 To use a separate node you will need a Compute node with Diamond as a monitoring agent. In our example, it is the ProxyServer.
-Next, create a ProxyNode contained in ProxyServer. It should be of the SNMPProxy type. Finally, add relationships as described in [_SNMPProxy and SNMPManagerProxy_](README.md#snmpproxy-and-snmpmanagerproxy).
+Next, create a ProxyNode contained in ProxyServer. It should be of the snmp_proxy type. Finally, add relationships as described in [_snmp_proxy and snmp_manager_proxy_](README.md#snmpproxy-and-snmpmanagerproxy).
 
 Used scripts
 ------------
