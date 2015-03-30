@@ -37,9 +37,6 @@ Used scripts
 [append_diamond_conf.py](scripts/append_diamond_conf.py)
 Adds the configuration specified in its inputs to the SNMP proxy's runtime properties so that it can be later added to the SNMPProxyCollector's config.
 
-[diamond_clean_up.py](scripts/diamond_clean_up.py)
-Temporarily here, it cleans up the directories created during the Diamond's installation.
-
 [install_requirements.sh](scripts/install_requirements.sh)
 Installs pysnmp, python module used by the SNMPProxyCollector.
 

@@ -1,8 +1,5 @@
 tosca_definitions_version: cloudify_dsl_1_0
 
-imports:
-  - http://www.getcloudify.org/spec/diamond-plugin/1.2m4/plugin.yaml
-
 
 node_types:
 
@@ -51,7 +48,7 @@ node_types:
           implementation: diamond.diamond_agent.tasks.stop
         uninstall:
           executor: central_deployment_agent
-          implementation: scripts/diamond_clean_up.py
+          implementation: diamond.diamond_agent.tasks.uninstall
 
       cloudify.interfaces.lifecycle:
         configure:
