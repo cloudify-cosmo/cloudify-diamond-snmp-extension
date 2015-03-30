@@ -3,13 +3,15 @@ from cloudify.state import ctx_parameters as inputs
 
 
 target_instance = ctx.target.instance
+target_node = ctx.target.node
 src_instance = ctx.source.instance
 
 config = src_instance.runtime_properties.get('snmp_collector_config', {})
 
 devices_conf = config.get('devices', {})
 devices_conf[ctx.target.node.name] = device_config = {}
-device_config['instance_id'] = target_instance.id
+device_config['node_instance_id'] = target_instance.id
+device_config['node_id'] = target_node.id
 if 'host' in inputs:
     device_config['host'] = inputs.host
 else:

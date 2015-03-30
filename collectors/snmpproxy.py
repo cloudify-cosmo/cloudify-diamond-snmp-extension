@@ -40,9 +40,9 @@ class SNMPProxyCollector(SNMPRawCollector):
                         oid, metricName, device, value))
 
                 device_path = '{}.{}.{}'.format(
-                    dev_config['instance_id'],
+                    dev_config['node_id'],
                     device,
-                    dev_config['instance_id']
+                    dev_config['node_instance_id']
                 )
                 path = '.'.join([self.config['path_prefix'], device_path,
                                  self.config['path_suffix'], metricName])
