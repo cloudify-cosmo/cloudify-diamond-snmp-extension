@@ -1,11 +1,7 @@
 # coding=utf-8
 
-import os
-import sys
 import time
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(__file__)),
-                                'snmp'))
 from snmpraw import SNMPRawCollector
 from diamond.metric import Metric
 
