@@ -1,5 +1,5 @@
 from cosmo_tester.test_suites.test_blueprints import monitoring_test
-
+from influxdb import InfluxDBClient
 from os import path
 
 
@@ -17,6 +17,15 @@ class TestSNMPProxy(monitoring_test.MonitoringTest):
               .format(self.env.management_ip, self.test_id)
         self.assert_grafana_path_active(url)
 
+        client = InfluxDBClient(
+            self.env.management_ip, 8086, 'root', 'root', 'cloudify')
+        all_series = client.get_list_series()
+        self.assertTrue(all_series) # not empty
+        for s in all_series:
+            self.assertIn('snmp_monitored_host', s)
+            self.assertIn('total', s)
+
+        # Performing cleanup
         self.execute_uninstall()
         self.cfy.delete_deployment(self.test_id)
         self.cfy.delete_blueprint(self.test_id)
