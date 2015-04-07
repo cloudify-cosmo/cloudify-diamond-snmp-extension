@@ -17,13 +17,15 @@ class TestSNMPProxy(monitoring_test.MonitoringTest):
               .format(self.env.management_ip, self.test_id)
         self.assert_grafana_path_active(url)
 
+        # Check that proper metrics are stored
         client = InfluxDBClient(
             self.env.management_ip, 8086, 'root', 'root', 'cloudify')
         all_series = client.get_list_series()
         self.assertTrue(all_series) # not empty
         for s in all_series:
+            # All series should refer to the snmp_monitore_host
             self.assertIn('snmp_monitored_host', s)
-            self.assertIn('total', s)
+            self.assertTrue('total.system' in s or 'total.user' in s)
 
         # Performing cleanup
         self.execute_uninstall()
