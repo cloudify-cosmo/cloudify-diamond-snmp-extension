@@ -23,7 +23,7 @@ class TestSNMPProxy(TestCase):
         for s in all_series:
             # All series should refer to the snmp_monitore_host
             self.assertIn('snmp_monitored_host', s)
-            self.assertTrue('total.system' in s or 'total.user' in s)
+            self.assertTrue('total_system' in s or 'total_user' in s)
 
         # Performing cleanup
         self.execute_uninstall()
