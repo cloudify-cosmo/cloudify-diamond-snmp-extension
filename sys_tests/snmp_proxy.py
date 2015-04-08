@@ -7,8 +7,9 @@ from cosmo_tester.framework.testenv import TestCase
 
 
 class TestSNMPProxy(TestCase):
+    TIME_TO_WAIT_FOR_METRICS = 10  # in seconds
 
-    def _check_snmp_monitoring(self, blueprint, inputs):
+    def _test_snmp_monitoring(self, blueprint, inputs):
         self.blueprint_yaml = path.join(
             path.dirname(path.dirname(path.realpath(__file__))),
             blueprint
@@ -17,11 +18,13 @@ class TestSNMPProxy(TestCase):
         self.upload_deploy_and_execute_install(inputs=inputs)
 
         # Check that proper metrics are stored
-        time.sleep(10)  # Wait for the metrics to appear
+        time.sleep(self.TIME_TO_WAIT_FOR_METRICS)
         client = InfluxDBClient(self.env.management_ip, database='cloudify')
         try:
-            res = client.query('select * from /^{0}\./i where time > now()-10s'
-                               .format(self.test_id))
+            res = client.query(
+                'select * from /^{0}\./i where time > now() - {1}s'
+                .format(self.test_id, self.TIME_TO_WAIT_FOR_METRICS)
+            )
         except NameError as e:
             self.fail('Monitoring events for deployment with ID {0} have'
                       ' not been found in influxDB. The error is: {1}'
@@ -38,7 +41,7 @@ class TestSNMPProxy(TestCase):
         inputs = {
             'monitored_host_ubuntu_image_name': self.env.ubuntu_trusty_image_id
         }
-        self._check_snmp_monitoring('proxy_on_manager.yaml', inputs)
+        self._test_snmp_monitoring('proxy_on_manager.yaml', inputs)
 
     def test_snmp_proxy_on_separate_vm(self):
         inputs = {
@@ -46,4 +49,4 @@ class TestSNMPProxy(TestCase):
                 self.env.ubuntu_trusty_image_id,
             'proxy_server_ubuntu_image_name': self.env.ubuntu_image_id
         }
-        self._check_snmp_monitoring('separate_proxy.yaml', inputs)
+        self._test_snmp_monitoring('separate_proxy.yaml', inputs)
