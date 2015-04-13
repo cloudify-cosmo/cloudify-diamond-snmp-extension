@@ -1,5 +1,4 @@
 from os import path
-import time
 
 from influxdb import InfluxDBClient
 
@@ -9,19 +8,7 @@ from cosmo_tester.framework.testenv import TestCase
 class TestSNMPProxy(TestCase):
     TIME_TO_WAIT_FOR_METRICS = 10  # in seconds
 
-    def _test_snmp_monitoring(self, blueprint, inputs):
-        self.blueprint_yaml = path.join(
-            path.dirname(path.dirname(path.realpath(__file__))),
-            blueprint
-        )
-        deployment_id = self.test_id
-        self.upload_deploy_and_execute_install(
-            inputs=inputs,
-            deployment_id=deployment_id
-        )
-
-        # Check that proper metrics are stored
-        time.sleep(self.TIME_TO_WAIT_FOR_METRICS)
+    def _check_influx_db(self, deployment_id):
         client = InfluxDBClient(self.env.management_ip, database='cloudify')
         try:
             res = client.query(
@@ -34,6 +21,23 @@ class TestSNMPProxy(TestCase):
                       .format(deployment_id, e))
 
         self.assertTrue(res[0]['points'])  # Assert not empty
+
+    def _test_snmp_monitoring(self, blueprint, inputs):
+        self.blueprint_yaml = path.join(
+            path.dirname(path.dirname(path.realpath(__file__))),
+            blueprint
+        )
+        deployment_id = self.test_id
+        self.upload_deploy_and_execute_install(
+            inputs=inputs,
+            deployment_id=deployment_id
+        )
+
+        self.repetitive(
+            self._check_influx_db,
+            self.TIME_TO_WAIT_FOR_METRICS,
+            args=[deployment_id]
+        )
 
         # Perform cleanup
         self.execute_uninstall()
