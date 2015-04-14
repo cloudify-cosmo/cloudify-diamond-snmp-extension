@@ -81,9 +81,6 @@ relationships:
             community:
               default: public
               description: the community
-            path_suffix:
-              default: cpu
-              description: temporary hack for charts
             oids:
               description: the oids to poll
 

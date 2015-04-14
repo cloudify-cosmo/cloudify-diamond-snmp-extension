@@ -21,6 +21,5 @@ device_config['community'] = inputs.community
 device_config['oids'] = inputs.oids
 
 config['devices'] = devices_conf
-config['path_suffix'] = inputs.path_suffix
 
 src_instance.runtime_properties['snmp_collector_config'] = config

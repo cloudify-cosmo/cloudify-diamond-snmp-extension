@@ -8,6 +8,21 @@ imports:
   - openstack-snmp-types.yaml
 
 
+inputs:
+  monitored_host_flavor_name:
+    description: OpenStack flavor
+    default: 101
+    type: integer
+  monitored_host_ubuntu_image_name:
+    type: string
+  proxy_server_flavor_name:
+    description: OpenStack flavor
+    default: 101
+    type: integer
+  proxy_server_ubuntu_image_name:
+    type: string
+
+
 node_templates:
 
   snmp_security_group:
@@ -19,8 +34,8 @@ node_templates:
       cloudify_agent:
        user: ubuntu
       server:
-        image: 9d25fe2d-cf31-4b05-8c58-f238ec78e633 # Ubuntu Server 14.04.1 LTS
-        flavor: 101
+        image: { get_input: monitored_host_ubuntu_image_name }
+        flavor: { get_input: monitored_host_flavor_name }
     relationships:
      - type: cloudify.openstack.server_connected_to_security_group
        target: snmp_security_group
@@ -37,8 +52,8 @@ node_templates:
       cloudify_agent:
         user: ubuntu
       server:
-        image: 261844b3-479c-5446-a2c4-1ea95d53b668
-        flavor: 101
+        image: { get_input: proxy_server_ubuntu_image_name }
+        flavor: { get_input: proxy_server_flavor_name }
     interfaces:
       cloudify.interfaces.monitoring_agent:
         install:
