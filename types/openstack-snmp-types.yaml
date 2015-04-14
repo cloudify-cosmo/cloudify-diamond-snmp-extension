@@ -14,4 +14,3 @@ node_types:
           - remote_ip_prefix: 0.0.0.0/0
             port: 161
             protocol: udp
-

@@ -83,4 +83,3 @@ relationships:
               description: the community
             oids:
               description: the oids to poll
-
