@@ -6,7 +6,7 @@ from cosmo_tester.framework.testenv import TestCase
 
 
 class TestSNMPProxy(TestCase):
-    TIME_TO_WAIT_FOR_METRICS = 10  # in seconds
+    TIME_TO_WAIT_FOR_METRICS = 30  # in seconds
 
     def _check_influx_db(self, deployment_id):
         client = InfluxDBClient(self.env.management_ip, database='cloudify')
@@ -35,7 +35,7 @@ class TestSNMPProxy(TestCase):
 
         self.repetitive(
             self._check_influx_db,
-            self.TIME_TO_WAIT_FOR_METRICS,
+            timeout=self.TIME_TO_WAIT_FOR_METRICS,
             args=[deployment_id]
         )
 
