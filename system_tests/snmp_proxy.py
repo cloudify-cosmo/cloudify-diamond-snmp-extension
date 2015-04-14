@@ -48,7 +48,7 @@ class TestSNMPProxy(TestCase):
         inputs = {
             'monitored_host_ubuntu_image_name': self.env.ubuntu_trusty_image_id
         }
-        self._test_snmp_monitoring('proxy_on_manager.yaml', inputs)
+        self._test_snmp_monitoring('proxy-on-manager-blueprint.yaml', inputs)
 
     def test_snmp_proxy_on_separate_vm(self):
         inputs = {
@@ -56,4 +56,4 @@ class TestSNMPProxy(TestCase):
                 self.env.ubuntu_trusty_image_id,
             'proxy_server_ubuntu_image_name': self.env.ubuntu_image_id
         }
-        self._test_snmp_monitoring('separate_proxy.yaml', inputs)
+        self._test_snmp_monitoring('separate-proxy-blueprint.yaml', inputs)
