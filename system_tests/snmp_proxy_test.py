@@ -22,14 +22,17 @@ class TestSNMPProxy(TestCase):
 
         self.assertTrue(res[0]['points'])  # Assert not empty
 
-    def _test_snmp_monitoring(self, blueprint, inputs):
+    def _test_snmp_monitoring(self, blueprint):
         self.blueprint_yaml = path.join(
             path.dirname(path.dirname(path.realpath(__file__))),
             blueprint
         )
         deployment_id = self.test_id
         self.upload_deploy_and_execute_install(
-            inputs=inputs,
+            inputs={
+                'image': self.env.ubuntu_trusty_image_name,
+                'flavor': self.env.flavor_name
+            },
             deployment_id=deployment_id
         )
 
@@ -45,15 +48,7 @@ class TestSNMPProxy(TestCase):
         self.cfy.delete_blueprint(deployment_id)
 
     def test_snmp_proxy_on_manager(self):
-        inputs = {
-            'monitored_host_ubuntu_image_name': self.env.ubuntu_trusty_image_id
-        }
-        self._test_snmp_monitoring('proxy-on-manager-blueprint.yaml', inputs)
+        self._test_snmp_monitoring('proxy-on-manager-blueprint.yaml')
 
     def test_snmp_proxy_on_separate_vm(self):
-        inputs = {
-            'monitored_host_ubuntu_image_name':
-                self.env.ubuntu_trusty_image_id,
-            'proxy_server_ubuntu_image_name': self.env.ubuntu_image_id
-        }
-        self._test_snmp_monitoring('separate-proxy-blueprint.yaml', inputs)
+        self._test_snmp_monitoring('separate-proxy-blueprint.yaml')

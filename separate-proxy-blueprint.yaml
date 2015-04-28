@@ -9,18 +9,8 @@ imports:
 
 
 inputs:
-  monitored_host_flavor_name:
-    description: OpenStack flavor
-    default: 101
-    type: integer
-  monitored_host_ubuntu_image_name:
-    type: string
-  proxy_server_flavor_name:
-    description: OpenStack flavor
-    default: 101
-    type: integer
-  proxy_server_ubuntu_image_name:
-    type: string
+  image: {}
+  flavor: {}
 
 
 node_templates:
@@ -33,9 +23,8 @@ node_templates:
     properties:
       cloudify_agent:
        user: ubuntu
-      server:
-        image: { get_input: monitored_host_ubuntu_image_name }
-        flavor: { get_input: monitored_host_flavor_name }
+       image: { get_input: image }
+       flavor: { get_input: flavor }
     relationships:
      - type: cloudify.openstack.server_connected_to_security_group
        target: snmp_security_group
@@ -51,9 +40,8 @@ node_templates:
     properties:
       cloudify_agent:
         user: ubuntu
-      server:
-        image: { get_input: proxy_server_ubuntu_image_name }
-        flavor: { get_input: proxy_server_flavor_name }
+      image: { get_input: image }
+      flavor: { get_input: flavor }
     interfaces:
       cloudify.interfaces.monitoring_agent:
         install:
