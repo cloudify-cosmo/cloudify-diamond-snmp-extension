@@ -12,7 +12,6 @@ inputs:
   image: {}
   flavor: {}
 
-
 node_templates:
 
   snmp_security_group:
@@ -21,10 +20,8 @@ node_templates:
   snmp_monitored_host:
     type: cloudify.openstack.nodes.Server
     properties:
-      cloudify_agent:
-       user: ubuntu
-       image: { get_input: image }
-       flavor: { get_input: flavor }
+      image: { get_input: image }
+      flavor: { get_input: flavor }
     relationships:
      - type: cloudify.openstack.server_connected_to_security_group
        target: snmp_security_group
@@ -38,8 +35,6 @@ node_templates:
   proxy_server:
     type: cloudify.openstack.nodes.Server
     properties:
-      cloudify_agent:
-        user: ubuntu
       image: { get_input: image }
       flavor: { get_input: flavor }
     interfaces:
