@@ -44,8 +44,8 @@ class TestSNMPProxy(TestCase):
 
         # Perform cleanup
         self.execute_uninstall()
-        self.cfy.delete_deployment(deployment_id)
-        self.cfy.delete_blueprint(deployment_id)
+        self.cfy.deployments.delete(deployment_id)
+        self.cfy.blueprints.delete(deployment_id)
 
     def test_snmp_proxy_on_manager(self):
         self._test_snmp_monitoring('proxy-on-manager-blueprint.yaml')
